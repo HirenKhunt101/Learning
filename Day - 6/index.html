@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Debounce vs Throttle Demo</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        padding: 40px;
+        background: #f9f9f9;
+      }
+      h2 {
+        margin-bottom: 10px;
+      }
+      .box {
+        margin-bottom: 40px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 6px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+      p {
+        font-size: 18px;
+        margin-top: 10px;
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🕹️ Debouncing vs Throttling Demo</h1>
+
+    <div class="box">
+      <h2>Debounce Example (waits until you stop clicking)</h2>
+      <button id="debounceBtn">Click Fast!</button>
+      <p>Debounced Count: <span id="debounceCount">0</span></p>
+    </div>
+
+    <div class="box">
+      <h2>Throttle Example (executes every 1 second max)</h2>
+      <button id="throttleBtn">Click Fast!</button>
+      <p>Throttled Count: <span id="throttleCount">0</span></p>
+    </div>
+
+    <script>
+      // Debounce function
+      function debounce(fn, delay) {
+        let timer;
+        return function (...args) {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn.apply(this, args), delay);
+        };
+      }
+
+      // Throttle function
+      function throttle(fn, limit) {
+        let inThrottle;
+        return function (...args) {
+          if (!inThrottle) {
+            fn.apply(this, args);
+            inThrottle = true;
+            setTimeout(() => (inThrottle = false), limit);
+          }
+        };
+      }
+
+      // Elements
+      const debounceCountEl = document.getElementById("debounceCount");
+      const throttleCountEl = document.getElementById("throttleCount");
+
+      let debounceCount = 0;
+      let throttleCount = 0;
+
+      // Debounce click handler
+      const handleDebounceClick = debounce(() => {
+        debounceCount++;
+        debounceCountEl.textContent = debounceCount;
+      }, 1000); // waits 1s after last click
+
+      // Throttle click handler
+      const handleThrottleClick = throttle(() => {
+        throttleCount++;
+        throttleCountEl.textContent = throttleCount;
+      }, 1000); // runs every 1s max
+
+      document
+        .getElementById("debounceBtn")
+        .addEventListener("click", handleDebounceClick);
+      document
+        .getElementById("throttleBtn")
+        .addEventListener("click", handleThrottleClick);
+    </script>
+  </body>
+</html>
